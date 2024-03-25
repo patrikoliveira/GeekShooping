@@ -22,16 +22,27 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Model\" />
     <None Remove="Model\Base\" />
     <None Remove="Model\Context\" />
+    <None Remove="Repository\" />
+    <None Remove="Data\" />
+    <None Remove="Data\ValueObjects\" />
+    <None Remove="Config\" />
+    <None Remove="Controllers\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />
     <Folder Include="Model\Base\" />
     <Folder Include="Model\Context\" />
+    <Folder Include="Repository\" />
+    <Folder Include="Data\" />
+    <Folder Include="Data\ValueObjects\" />
+    <Folder Include="Config\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
 </Project>
