@@ -11,7 +11,6 @@
   "profiles": {
     "GeekShopping.ProductAPI": {
       "commandName": "Project",
-      "launchBrowser": true,
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5120",
       "environmentVariables": {
