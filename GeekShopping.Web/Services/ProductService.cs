@@ -1,4 +1,5 @@
-﻿using GeekShopping.Web.Models;
+﻿using System.Net.Http.Headers;
+using GeekShopping.Web.Models;
 using GeekShopping.Web.Services.IServices;
 using GeekShopping.Web.Utils;
 
@@ -14,20 +15,23 @@ public class ProductService : IProductService
         this.client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async Task<IEnumerable<ProductModel>> FindAllProducts()
+    public async Task<IEnumerable<ProductModel>> FindAllProducts(string token)
     {
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await client.GetAsync(BasePath);
         return await response.ReadContentAs<List<ProductModel>>();
     }
 
-    public async Task<ProductModel> FindProductById(long id)
+    public async Task<ProductModel> FindProductById(long id, string token)
     {
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await client.GetAsync($"{BasePath}/{id}");
         return await response.ReadContentAs<ProductModel>();
     }
 
-    public async Task<ProductModel> CreateProduct(ProductModel model)
+    public async Task<ProductModel> CreateProduct(ProductModel model, string token)
     {
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await client.PostAsJson(BasePath, model);
 
         if (!response.IsSuccessStatusCode)
@@ -38,8 +42,9 @@ public class ProductService : IProductService
         return await response.ReadContentAs<ProductModel>();
     }
 
-    public async Task<ProductModel> UpdateProduct(ProductModel model)
+    public async Task<ProductModel> UpdateProduct(ProductModel model, string token)
     {
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await client.PutAsJson(BasePath, model);
 
         if (!response.IsSuccessStatusCode)
@@ -50,8 +55,9 @@ public class ProductService : IProductService
         return await response.ReadContentAs<ProductModel>();
     }
 
-    public async Task<bool> DeleteProductById(long id)
+    public async Task<bool> DeleteProductById(long id, string token)
     {
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await client.DeleteAsync($"{BasePath}/{id}");
 
         if (!response.IsSuccessStatusCode)

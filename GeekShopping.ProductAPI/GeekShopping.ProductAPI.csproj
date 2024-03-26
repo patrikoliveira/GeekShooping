@@ -34,6 +34,7 @@
     <None Remove="Data\ValueObjects\" />
     <None Remove="Config\" />
     <None Remove="Controllers\" />
+    <None Remove="Utils\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />
@@ -44,5 +45,6 @@
     <Folder Include="Data\ValueObjects\" />
     <Folder Include="Config\" />
     <Folder Include="Controllers\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
 </Project>
