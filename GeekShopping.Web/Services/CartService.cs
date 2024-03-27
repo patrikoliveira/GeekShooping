@@ -91,9 +91,17 @@ public class CartService : ICartService
         throw new NotImplementedException();
     }
 
-    public async Task<CartViewModel> Checkout(CartHeaderViewModel cartHeader, string token)
+    public async Task<CartHeaderViewModel> Checkout(CartHeaderViewModel model, string token)
     {
-        throw new NotImplementedException();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await client.PostAsJson($"{BasePath}/checkout", model);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception("Something went wrong when calling API");
+        }
+
+        return await response.ReadContentAs<CartHeaderViewModel>();
     }
 }
 

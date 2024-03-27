@@ -40,11 +40,13 @@
     <None Remove="Data\ValueObjects\" />
     <None Remove="Repository\" />
     <None Remove="Controllers\" />
+    <None Remove="Messages\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Data\ValueObjects\" />
     <Folder Include="Repository\" />
     <Folder Include="Controllers\" />
+    <Folder Include="Messages\" />
   </ItemGroup>
 </Project>

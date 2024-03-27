@@ -1,4 +1,5 @@
 using GeekShopping.CartAPI.Data.ValueObjects;
+using GeekShopping.CartAPI.Messages;
 using GeekShopping.CartAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -86,5 +87,22 @@ public class CartController : ControllerBase
         }
 
         return Ok(status);
+    }
+
+    [HttpPost("checkout")]
+    public async Task<ActionResult<CartVO>> Checkout(CheckoutHeaderVO vo)
+    {
+        var cart = await repository.FindCartByUserId(vo.UserId);
+
+        if (cart == null)
+        {
+            return NotFound();
+        }
+        vo.CartDetails = cart.CartDetails;
+        vo.DateTime = DateTime.Now;
+
+        //TASK RabbitMQ logic comes here!!!
+
+        return Ok(vo); 
     }
 }
