@@ -25,26 +25,26 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Model\" />
-    <None Remove="Model\Base\" />
-    <None Remove="Model\Context\" />
-    <None Remove="Repository\" />
-    <None Remove="Data\" />
-    <None Remove="Data\ValueObjects\" />
-    <None Remove="Config\" />
+  <!-- <ItemGroup>
     <None Remove="Controllers\" />
-    <None Remove="Utils\" />
+    <None Remove="Model\" />
+    <None Remove="Config\" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Controllers\" />
     <Folder Include="Model\" />
-    <Folder Include="Model\Base\" />
-    <Folder Include="Model\Context\" />
-    <Folder Include="Repository\" />
+    <Folder Include="Config\" />
+  </ItemGroup> -->
+  <ItemGroup>
+    <None Remove="Data\" />
+    <None Remove="Data\ValueObjects\" />
+    <None Remove="Repository\" />
+    <None Remove="Controllers\" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Data\ValueObjects\" />
-    <Folder Include="Config\" />
+    <Folder Include="Repository\" />
     <Folder Include="Controllers\" />
-    <Folder Include="Utils\" />
   </ItemGroup>
 </Project>
