@@ -4,76 +4,75 @@ using GeekShopping.ProductAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GeekShopping.ProductAPI.Controllers
+namespace GeekShopping.ProductAPI.Controllers;
+
+[Route("api/v1/[controller]")]
+[ApiController]
+public class ProductController : ControllerBase
 {
-    [Route("api/v1/[controller]")]
-    [ApiController]
-    public class ProductController : ControllerBase
+    private readonly IProductRepository repository;
+
+    public ProductController(IProductRepository repository)
     {
-        private readonly IProductRepository repository;
+        this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
+    }
 
-        public ProductController(IProductRepository repository)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ProductVO>>> FindAll()
+    {
+        var products = await repository.FindAll();
+
+        return Ok(products);
+    }
+
+    [Authorize]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ProductVO>> FindById(long id)
+    {
+        var product = await repository.FindById(id);
+        if (product == null)
         {
-            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            return NotFound();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductVO>>> FindAll()
-        {
-            var products = await repository.FindAll();
+        return Ok(product);
+    }
 
-            return Ok(products);
+    [Authorize]
+    [HttpPost]
+    public async Task<ActionResult<ProductVO>> Create([FromBody] ProductVO vo)
+    {
+        if (vo == null)
+        {
+            return BadRequest();
         }
 
-        [Authorize]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ProductVO>> FindById(long id)
-        {
-            var product = await repository.FindById(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+        var product = await repository.Create(vo);
+        return Ok(product);
+    }
 
-            return Ok(product);
+    [Authorize]
+    [HttpPut]
+    public async Task<ActionResult<ProductVO>> Update([FromBody] ProductVO vo)
+    {
+        if (vo == null)
+        {
+            return BadRequest();
         }
 
-        [Authorize]
-        [HttpPost]
-        public async Task<ActionResult<ProductVO>> Create([FromBody] ProductVO vo)
+        var product = await repository.Update(vo);
+        return Ok(product);
+    }
+
+    [Authorize(Roles = Role.Admin)]
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(long id)
+    {
+        var status = await repository.Delete(id);
+        if (!status)
         {
-            if (vo == null)
-            {
-                return BadRequest();
-            }
-
-            var product = await repository.Create(vo);
-            return Ok(product);
+            return BadRequest();
         }
-
-        [Authorize]
-        [HttpPut]
-        public async Task<ActionResult<ProductVO>> Update([FromBody] ProductVO vo)
-        {
-            if (vo == null)
-            {
-                return BadRequest();
-            }
-
-            var product = await repository.Update(vo);
-            return Ok(product);
-        }
-
-        [Authorize(Roles = Role.Admin)]
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(long id)
-        {
-            var status = await repository.Delete(id);
-            if (!status)
-            {
-                return BadRequest();
-            }
-            return Ok(status);
-        }
+        return Ok(status);
     }
 }
