@@ -1,8 +1,9 @@
-﻿namespace GeekShopping.CouponAPI.Data.ValueObjects;
+﻿namespace GeekShopping.Web.Models;
 
-public class CouponVO
+public class CouponViewModel
 {
     public long Id { get; set; }
     public string CouponCode { get; set; }
     public decimal DiscountAmount { get; set; }
 }
+

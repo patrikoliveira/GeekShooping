@@ -9,7 +9,7 @@ namespace GeekShopping.CartAPI.Repository;
 public class CartRepository : ICartRepository
 {
     private readonly MySQLContext context;
-    private IMapper mapper;
+    private readonly IMapper mapper;
 
     public CartRepository(MySQLContext context, IMapper mapper)
     {
@@ -19,7 +19,19 @@ public class CartRepository : ICartRepository
 
     public async Task<bool> ApplyCoupon(string userId, string couponCode)
     {
-        throw new NotImplementedException();
+        var header = await context.CartHeaders
+            .FirstOrDefaultAsync(c => c.UserId == userId);
+
+        if (header != null)
+        {
+            header.CouponCode = couponCode;
+
+            context.CartHeaders.Update(header);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
     }
 
     public async Task<bool> ClearCart(string userId)
@@ -58,7 +70,19 @@ public class CartRepository : ICartRepository
 
     public async Task<bool> RemoveCoupon(string userId)
     {
-        throw new NotImplementedException();
+        var header = await context.CartHeaders
+            .FirstOrDefaultAsync(c => c.UserId == userId);
+
+        if (header != null)
+        {
+            header.CouponCode = "";
+
+            context.CartHeaders.Update(header);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
     }
 
     public async Task<bool> RemoveFromCart(long cartDetailsId)
