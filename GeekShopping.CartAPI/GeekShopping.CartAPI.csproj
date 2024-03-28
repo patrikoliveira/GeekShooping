@@ -23,6 +23,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
   </ItemGroup>
 
   <!-- <ItemGroup>
@@ -41,6 +42,7 @@
     <None Remove="Repository\" />
     <None Remove="Controllers\" />
     <None Remove="Messages\" />
+    <None Remove="RabbitMQSender\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -48,5 +50,11 @@
     <Folder Include="Repository\" />
     <Folder Include="Controllers\" />
     <Folder Include="Messages\" />
+    <Folder Include="RabbitMQSender\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeekShopping.MessageBus\GeekShopping.MessageBus.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 </Project>
