@@ -1,5 +1,4 @@
 ﻿using System.Net.Http.Headers;
-using System.Reflection;
 using GeekShopping.Web.Models;
 using GeekShopping.Web.Services.IServices;
 using GeekShopping.Web.Utils;
@@ -91,17 +90,20 @@ public class CartService : ICartService
         throw new NotImplementedException();
     }
 
-    public async Task<CartHeaderViewModel> Checkout(CartHeaderViewModel model, string token)
+    public async Task<object> Checkout(CartHeaderViewModel model, string token)
     {
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await client.PostAsJson($"{BasePath}/checkout", model);
 
-        if (!response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
         {
-            throw new Exception("Something went wrong when calling API");
+            return await response.ReadContentAs<CartHeaderViewModel>();   
+        } else if (response.StatusCode.ToString().Equals("PreconditionFailed"))
+        {
+            return "Coupon Price has changed, please confirm!";
         }
+        throw new Exception("Something went wrong when calling API");
 
-        return await response.ReadContentAs<CartHeaderViewModel>();
     }
 }
 
