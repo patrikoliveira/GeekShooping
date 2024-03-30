@@ -19,7 +19,7 @@ public class CartService : ICartService
     {
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await client.GetAsync($"{BasePath}/find-cart/{userId}");
-        return await response.ReadContentAs<CartViewModel >();
+        return await response.ReadContentAs<CartViewModel>();
     }
 
     public async Task<CartViewModel> AddItemToCart(CartViewModel model, string token)

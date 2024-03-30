@@ -127,6 +127,8 @@ public class CartController : ControllerBase
 
         rabbitMQMessageSender.SendMessage(vo, "checkoutqueue");
 
+        await cartRepository.ClearCart(vo.UserId);
+
         return Ok(vo); 
     }
 }
