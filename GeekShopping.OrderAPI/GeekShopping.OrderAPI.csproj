@@ -37,6 +37,7 @@
     <None Remove="Repository\" />
     <None Remove="Messages\" />
     <None Remove="MessageConsumer\" />
+    <None Remove="RabbitMQSender\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -44,5 +45,6 @@
     <Folder Include="Repository\" />
     <Folder Include="Messages\" />
     <Folder Include="MessageConsumer\" />
+    <Folder Include="RabbitMQSender\" />
   </ItemGroup>
 </Project>
