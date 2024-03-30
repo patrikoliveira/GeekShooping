@@ -16,7 +16,7 @@ public class RabbitMQPaymentConsumer : BackgroundService
     private IProcessPayment processPayment;
     private const string orderPaymentProcessQueue = "orderpaymentprocessqueue";
     private const string orderPaymentResultQueue = "orderpaymentresultqueue";
-
+    
     public RabbitMQPaymentConsumer(IProcessPayment processPayment, IRabbitMQMessageSender rabbitMQMessageSender)
     {
         this.processPayment = processPayment ?? throw new ArgumentNullException(nameof(processPayment));
@@ -32,8 +32,8 @@ public class RabbitMQPaymentConsumer : BackgroundService
         connection = factory.CreateConnection();
         channel = connection.CreateModel();
 
-        channel.QueueDeclare(queue: orderPaymentProcessQueue, false, false, false, arguments: null);        
-    }
+        channel.QueueDeclare(queue: orderPaymentProcessQueue, false, false, false, arguments: null);
+            }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -63,7 +63,7 @@ public class RabbitMQPaymentConsumer : BackgroundService
                 OrderId = vo.OrderId,
                 Email = vo.Email,
             };
-            rabbitMQMessageSender.SendMessage(paymentResult, orderPaymentResultQueue);
+            rabbitMQMessageSender.SendMessage(paymentResult);
         }
         catch (Exception)
         {

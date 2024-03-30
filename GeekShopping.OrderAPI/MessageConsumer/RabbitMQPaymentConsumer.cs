@@ -12,7 +12,9 @@ public class RabbitMQPaymentConsumer : BackgroundService
     private readonly OrderRepository repository;
     private IConnection connection;
     private IModel channel;
-    private const string orderPaymentResultQueue = "orderpaymentresultqueue";
+    //private const string orderPaymentResultQueue = "orderpaymentresultqueue";
+    private const string ExchangeName = "FanoutPaymentUpdateExchange";
+    private string queueName = "";
 
     public RabbitMQPaymentConsumer(OrderRepository repository)
     {
@@ -28,7 +30,10 @@ public class RabbitMQPaymentConsumer : BackgroundService
         connection = factory.CreateConnection();
         channel = connection.CreateModel();
 
-        channel.QueueDeclare(queue: orderPaymentResultQueue, false, false, false, arguments: null);        
+        //channel.QueueDeclare(queue: orderPaymentResultQueue, false, false, false, arguments: null);
+        channel.ExchangeDeclare(ExchangeName, ExchangeType.Fanout);
+        queueName = channel.QueueDeclare().QueueName;
+        channel.QueueBind(queueName, ExchangeName, "");
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -44,7 +49,7 @@ public class RabbitMQPaymentConsumer : BackgroundService
             this.channel.BasicAck(evt.DeliveryTag, false);
         };
 
-        channel.BasicConsume(orderPaymentResultQueue, false, consumer);
+        channel.BasicConsume(queueName, false, consumer);
         return Task.CompletedTask;
     }
 
