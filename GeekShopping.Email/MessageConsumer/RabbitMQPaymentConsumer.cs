@@ -1,23 +1,22 @@
 ﻿using System.Text;
 using System.Text.Json;
-using GeekShopping.OrderAPI.Messages;
-using GeekShopping.OrderAPI.Repository;
+using GeekShopping.Email.Messages;
+using GeekShopping.Email.Repository;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace GeekShopping.OrderAPI.MessageConsumer;
+namespace GeekShopping.Email.MessageConsumer;
 
 public class RabbitMQPaymentConsumer : BackgroundService
 {
-    private readonly OrderRepository repository;
+    private readonly EmailRepository repository;
     private IConnection connection;
     private IModel channel;
-    //private const string orderPaymentResultQueue = "orderpaymentresultqueue";
     private const string ExchangeName = "DirectPaymentUpdateExchange";
-    private const string PaymentOrderUpdateQueueName = "PaymentOrderUpdateQueueName";
-    private const string RoutingKeyPaymentOrder = "PaymentOrder";
+    private const string PaymentEmailUpdateQueueName = "PaymentEmailUpdateQueueName";
+    private const string RoutingKeyPaymentEmail = "PaymentEmail";
 
-    public RabbitMQPaymentConsumer(OrderRepository repository)
+    public RabbitMQPaymentConsumer(EmailRepository repository)
     {
         this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
@@ -32,8 +31,8 @@ public class RabbitMQPaymentConsumer : BackgroundService
         channel = connection.CreateModel();
 
         channel.ExchangeDeclare(ExchangeName, ExchangeType.Direct);
-        channel.QueueDeclare(PaymentOrderUpdateQueueName, false, false, false, null);
-        channel.QueueBind(PaymentOrderUpdateQueueName, ExchangeName, RoutingKeyPaymentOrder);
+        channel.QueueDeclare(PaymentEmailUpdateQueueName, false, false, false, null);
+        channel.QueueBind(PaymentEmailUpdateQueueName, ExchangeName, RoutingKeyPaymentEmail);
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -44,20 +43,20 @@ public class RabbitMQPaymentConsumer : BackgroundService
         consumer.Received += (channel, evt) =>
         {
             var content = Encoding.UTF8.GetString(evt.Body.ToArray());
-            UpdatePaymentResultVO vo = JsonSerializer.Deserialize<UpdatePaymentResultVO>(content);
-            UpdatePaymentStatus(vo).GetAwaiter().GetResult();
+            UpdatePaymentResultMessage message = JsonSerializer.Deserialize<UpdatePaymentResultMessage>(content);
+            ProcessLogs(message).GetAwaiter().GetResult();
             this.channel.BasicAck(evt.DeliveryTag, false);
         };
 
-        channel.BasicConsume(PaymentOrderUpdateQueueName, false, consumer);
+        channel.BasicConsume(PaymentEmailUpdateQueueName, false, consumer);
         return Task.CompletedTask;
     }
 
-    private async Task UpdatePaymentStatus(UpdatePaymentResultVO vo)
+    private async Task ProcessLogs(UpdatePaymentResultMessage message)
     {
         try
         {
-            await repository.UpdateOrderPaymentStatus(vo.OrderId, vo.Status);
+            await repository.LogEmail(message);
         }
         catch (Exception)
         {
